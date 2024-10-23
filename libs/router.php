@@ -14,6 +14,7 @@ class Route {
         $this->method = $method;
         $this->params = [];
     }
+
     public function match($url, $verb) {
         if($this->verb != $verb){
             return false;
@@ -25,19 +26,20 @@ class Route {
         }
         foreach ($partsRoute as $key => $part) {
             if($part[0] != ":"){
-                if($part != $partsURL[$key])
-                return false;
-            } //es un parametro
-            else
-            $this->params[$part] = $partsURL[$key];
+                if($part != $partsURL[$key]) {
+                    return false;
+                }
+            } else {
+                $this->params[$part] = $partsURL[$key]; // es un parámetro
+            }
         }
         return true;
     }
+
     public function run(){
         $controller = $this->controller;  
         $method = $this->method;
         $params = $this->params;
-       
         (new $controller())->$method($params);
     }
 }
@@ -51,18 +53,16 @@ class Router {
     }
 
     public function route($url, $verb) {
-        //$ruta->url //no compila!
         foreach ($this->routeTable as $route) {
             if($route->match($url, $verb)){
-                //TODO: ejecutar el controller//ejecutar el controller
-                // pasarle los parametros
                 $route->run();
                 return;
             }
         }
-        //Si ninguna ruta coincide con el pedido y se configuró ruta por defecto.
-        if ($this->defaultRoute != null)
+        // Si ninguna ruta coincide con el pedido y se configuró ruta por defecto.
+        if ($this->defaultRoute != null) {
             $this->defaultRoute->run();
+        }
     }
     
     public function addRoute ($url, $verb, $controller, $method) {

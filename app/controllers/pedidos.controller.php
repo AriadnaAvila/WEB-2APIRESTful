@@ -87,7 +87,7 @@ class pedidosController {
     
 
     public function filterPedidos($params = NULL) {
-      $campo = $params[':CAMPO'];
+      $campo = $params[':campo'];
       $valor = $this->getData()->valor; // Asumiendo que el valor se envía en el cuerpo de la solicitud
   
       try {

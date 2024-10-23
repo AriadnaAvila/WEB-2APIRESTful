@@ -12,9 +12,21 @@ $router->addRoute('pedidos/:ID', 'GET', 'pedidosController', 'showPedidoById');
 $router->addRoute('pedidos/:ID', 'DELETE', 'pedidosController', 'deletePedido');
 $router->addRoute('pedidos', 'POST', 'pedidosController', 'addPedido');
 $router->addRoute('pedidos/:ID', 'PUT', 'pedidosController', 'updatePedido'); 
+$router->addRoute('pedidos/filter/:campo', 'POST', 'pedidosController', 'filterPedidos');
 $router->addRoute('pedidos/token', 'GET', 'UserApiController', 'getToken');
 
-echo $_GET["resource"];
+// Captura la parte de la URL que necesitas
+$resource = isset($_GET["resource"]) ? $_GET["resource"] : '';
 
-// ejecuta la ruta (sea cual sea)
-$router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);
+// Para depuración, puedes imprimir el recurso
+echo $resource;
+
+// Ajusta la lógica de ruteo para interpretar el valor del campo
+if (preg_match('/^pedidos\/filter\/([^\/]+)$/', $resource, $matches)) {
+    $campo = $matches[1]; // Captura el campo
+    // Cambia a la ruta con el campo correspondiente
+    $router->route("pedidos/filter/$campo", $_SERVER['REQUEST_METHOD']);
+} else {
+    // Ejecuta la ruta normal
+    $router->route($resource, $_SERVER['REQUEST_METHOD']);
+}
