@@ -74,15 +74,34 @@ class pedidosController {
       }
 
      
-        public function updatePedido($params = null){
-          $id_pedido = $params[':ID'];
-          $pedido = $this->model->getPedidoById($id_pedido);
-          if ($pedido){
-              $pedido = $this->getData();
-              $this->model->update($pedido->id_pedido, $pedido->fecha_pedido, $pedido->estado, $pedido->total, $id_pedido);
-              $this->apiView->response("el pedido con el id=$id_pedido se actualizo correctamente",200);
-              }else {
-              $this->apiView->response("El pedido no existe",404);
+      public function updatePedido($params = null){
+        $id_pedido = $params[':ID'];
+        $pedidoData = $this->getData();
+        if ($pedidoData) {
+            $this->model->update($id_pedido, $pedidoData->fecha_pedido, $pedidoData->estado, $pedidoData->total);
+            $this->apiView->response("El pedido con el id=$id_pedido se actualizó correctamente", 200);
+        } else {
+            $this->apiView->response("El pedido no existe", 404);
+        }
+    }
+    
+
+    public function filterPedidos($params = NULL) {
+      $campo = $params[':CAMPO'];
+      $valor = $this->getData()->valor; // Asumiendo que el valor se envía en el cuerpo de la solicitud
+  
+      try {
+          $pedidos = $this->model->filterPedidos($campo, $valor);
+          if (!empty($pedidos)) {
+              $this->apiView->response($pedidos, 200);
+          } else {
+              $this->apiView->response("No se encontraron pedidos para el campo $campo con el valor $valor", 404);
           }
+      } catch (InvalidArgumentException $e) {
+          $this->apiView->response($e->getMessage(), 400);
+      } catch (Exception $e) {
+          $this->apiView->response("Error en la consulta: " . $e->getMessage(), 500);
       }
+  }
+  
 }

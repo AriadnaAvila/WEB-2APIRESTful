@@ -33,7 +33,7 @@ class pedidosModel {
 
 
    
-    function deleteProduct($id_pedido) {
+    function deletePedido($id_pedido) {
         $query = $this->db->prepare('DELETE FROM pedidos WHERE id_pedido = ?');
         $query->execute([$id_pedido]);
     }
@@ -51,5 +51,20 @@ class pedidosModel {
         $query = $this->db->prepare('UPDATE pedidos SET fecha_pedido=?, estado=?, total=? WHERE id_pedido=?');
         $query->execute([$id_pedido, $fecha_pedido, $estado, $total]);
     }
+
+    public function filterPedidos($campo, $valor) {
+        // Escapa el campo para evitar inyección SQL
+        $camposValidos = ['id_pedido', 'fecha_pedido', 'estado', 'total'];
+        
+        if (!in_array($campo, $camposValidos)) {
+            throw new InvalidArgumentException("Campo no válido");
+        }
+    
+        // Prepara y ejecuta la consulta
+        $query = $this->db->prepare("SELECT * FROM pedidos WHERE $campo = ?");
+        $query->execute([$valor]);
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+    
 
 }
