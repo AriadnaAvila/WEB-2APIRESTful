@@ -42,8 +42,8 @@ class pedidosController {
       public function showPedidoById($params = NULL) {
         $id_pedido = $params[':ID'];
         $pedidos  = $this->model->getPedidoById($id_pedido);
-        if($products)
-            $this->apiView->response($products, 200);
+        if($pedidos)
+            $this->apiView->response($pedidos, 200);
         else 
             $this->apiView->response("El pedido buscado con el id=$id_pedido no existe", 404);
       }

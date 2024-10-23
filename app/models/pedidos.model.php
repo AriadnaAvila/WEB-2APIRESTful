@@ -16,11 +16,11 @@ class pedidosModel {
     }
 
   
-    public function getPedidoById($id_pedidos) {
-        $query = $this->db->prepare("SELECT * FROM pedidos WHERE id_pedidos = ?");
-        $query->execute([$id_pedidos]);
-        $pedidosById = $query->fetch(PDO::FETCH_OBJ);
-        return $pedidosById;
+    public function getPedidoById($id_pedido) {
+        $query = $this->db->prepare("SELECT * FROM pedidos WHERE id_pedido = ?");
+        $query->execute([$id_pedido]);
+        $pedidoById = $query->fetch(PDO::FETCH_OBJ);
+        return $pedidoById;
     }
 
    
