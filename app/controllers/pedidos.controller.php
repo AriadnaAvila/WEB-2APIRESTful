@@ -22,21 +22,41 @@ class pedidosController {
     }
 
     
-    public function showAll($params = NULL){
+    public function showAll($params = NULL) {
+      $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Número de pedidos por página
+      $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Número de página actual
+      $offset = ($page - 1) * $limit; // Calcular el desplazamiento
+  
+      // Verifica si hay ordenamiento
       if (isset($_GET['sortby']) && isset($_GET['order'])) { 
-        if (($_GET['sortby'] == 'id_pedido' || $_GET['sortby'] == 'fecha_pedido'|| $_GET['sortby'] == 'estado'|| $_GET['sortby'] == 'total') 
-        &&($_GET['order']== 'ASC' || $_GET['order']== 'DESC')){
-          $pedidos = $this->model->sortbyorder($_GET['sortby'], $_GET['order']);
-          return $this->apiView->response($pedidos, 200);
-        }else{
-          return $this->apiView->response("Los campos son inválidos", 400);
-        }
+          if (in_array($_GET['sortby'], ['id_pedido', 'fecha_pedido', 'estado', 'total']) && in_array($_GET['order'], ['ASC', 'DESC'])) {
+              $pedidos = $this->model->sortbyorder($_GET['sortby'], $_GET['order']);
+              return $this->apiView->response($pedidos, 200);
+          } else {
+              return $this->apiView->response("Los campos son inválidos", 400);
+          }
+      } else {
+          // Obtiene la lista de pedidos con paginación
+          $pedidos = $this->model->getAll($limit, $offset);
+          
+          // Cuenta el total de pedidos
+          $totalPedidos = $this->model->getTotalCount(); // Método que debes implementar para contar los pedidos
+          $totalPages = ceil($totalPedidos / $limit); // Calcula el total de páginas
+  
+          // Prepara la respuesta con información de paginación
+          $response = [
+              'current_page' => $page,
+              'total_pages' => $totalPages,
+              'total_items' => $totalPedidos,
+              'items' => $pedidos,
+          ];
+  
+          // Devuelve la respuesta
+          return $this->apiView->response($response, 200);
       } 
-      else{
-        $pedidos = $this->model->getAll();
-        return $this->apiView->response($pedidos, 200);
-      } 
-    }
+  }
+  
+  
 
    
       public function showPedidoById($params = NULL) {

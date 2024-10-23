@@ -8,12 +8,24 @@ class pedidosModel {
         $this->db = new PDO('mysql:host=localhost;'.'dbname=db_tienda_ropa;charset=utf8', 'root', '');
     }
 
-    public function getAll() {
-        $query = $this->db->prepare("SELECT * FROM pedidos");
-        $query->execute();
-        $pedidos = $query->fetchAll(PDO::FETCH_OBJ);
-        return $pedidos;
+    public function getAll($limit = null, $offset = null) {
+        $query = "SELECT * FROM pedidos";
+        
+        if ($limit !== null && $offset !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+        
+        $stmt = $this->db->prepare($query);
+        
+        if ($limit !== null && $offset !== null) {
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        }
+    
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
   
     public function getPedidoById($id_pedido) {
@@ -64,6 +76,13 @@ class pedidosModel {
         $query = $this->db->prepare("SELECT * FROM pedidos WHERE $campo = ?");
         $query->execute([$valor]);
         return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function getTotalCount() {
+        $query = "SELECT COUNT(*) FROM pedidos";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
     
 
