@@ -1,7 +1,8 @@
-
 # API de Pedidos
 
 Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se detalla cada endpoint disponible, incluyendo métodos, descripciones, y ejemplos de uso.
+
+# http://localhost/pedidos
 
 ## Endpoints
 
@@ -45,10 +46,10 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
 - **Cuerpo de la solicitud:**
   ```json
   {
-      "id_pedido": 1,
-      "fecha_pedido": "2024-10-23",
-      "estado": "pendiente",
-      "total": 100.50
+    "id_pedido": 1,
+    "fecha_pedido": "2024-10-23",
+    "estado": "pendiente",
+    "total": 100.5
   }
   ```
 - **Ejemplo de uso:**
@@ -66,9 +67,9 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
 - **Cuerpo de la solicitud:**
   ```json
   {
-      "fecha_pedido": "2024-10-24",
-      "estado": "completado",
-      "total": 150.75
+    "fecha_pedido": "2024-10-24",
+    "estado": "completado",
+    "total": 150.75
   }
   ```
 - **Ejemplo de uso:**
@@ -87,12 +88,3 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
   ```bash
   curl -X DELETE http://localhost/pedidos/1
   ```
-
-## Notas
-
-- Asegúrate de que el servidor esté en funcionamiento y que la base de datos esté configurada correctamente antes de realizar las solicitudes.
-- Utiliza herramientas como Postman o cURL para probar los endpoints.
-
-## Conclusión
-
-Esta API proporciona una interfaz sencilla para gestionar pedidos. Si tienes preguntas o necesitas más detalles, no dudes en preguntar.
