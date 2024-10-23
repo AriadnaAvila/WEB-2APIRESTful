@@ -88,3 +88,39 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
   ```bash
   curl -X DELETE http://localhost/WEB-2APIRESTful/api/pedidos/1
   ```
+
+### 7. Paginacion de pedidos
+
+- **Método:** `GET`
+- **Endpoint:** `/pedidos`
+- **Descripción:** Permite obtener una lista de todos los pedidos con paginación. Puedes especificar el número de elementos por página y la página actual.
+- **Parámetros de consulta:**
+  limit: (opcional) Número de pedidos a retornar por página. Por defecto es 10.
+  page: (opcional) Número de la página actual. Por defecto es 1.
+- **Ejemplo de uso:**
+  ```bash
+  curl -X GET "http://localhost/WEB-2APIRESTful/api/pedidos?limit=5&page=2"
+  ```
+  - **Respuesta:**
+  La respuesta incluirá la información de paginación junto con los pedidos obtenidos. Un ejemplo de la respuesta podría ser:
+
+  {
+  "current_page": 2,
+  "total_pages": 4,
+  "total_items": 15,
+  "items": [
+    {
+      "id_pedido": 6,
+      "fecha_pedido": "2024-10-20",
+      "estado": "pendiente",
+      "total": 75.00
+    },
+    {
+      "id_pedido": 7,
+      "fecha_pedido": "2024-10-21",
+      "estado": "completado",
+      "total": 150.00
+    }
+    // ... más pedidos
+  ]
+}
