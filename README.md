@@ -101,7 +101,7 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
   ```bash
   curl -X GET "http://localhost/WEB-2APIRESTful/api/pedidos?limit=5&page=2"
   ```
-  - **Respuesta:**
+- **Respuesta:**
   La respuesta incluirá la información de paginación junto con los pedidos obtenidos. Un ejemplo de la respuesta podría ser:
 
   {
@@ -109,18 +109,53 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
   "total_pages": 4,
   "total_items": 15,
   "items": [
+  {
+  "id_pedido": 6,
+  "fecha_pedido": "2024-10-20",
+  "estado": "pendiente",
+  "total": 75.00
+  },
+  {
+  "id_pedido": 7,
+  "fecha_pedido": "2024-10-21",
+  "estado": "completado",
+  "total": 150.00
+  }
+  // ... más pedidos
+  ]
+  }
+
+### 8. Ordenar pedidos por campo (Ascendente o Descendente)
+
+- **Método:** `GET`
+- **Endpoint:** `/pedidos?sort_by={campo}&order={asc|desc}`
+- **Descripción:** Permite ordenar los pedidos por el campo especificado en orden ascendente o descendente. Los campos válidos son id_pedido, fecha_pedido, estado, total.
+- **Parámetros de consulta:**
+  sort_by: El campo por el cual se realizará la ordenación (por ejemplo, fecha_pedido, estado).
+  order: Define el orden de la lista. Utiliza asc para orden ascendente o desc para descendente.
+- **Ejemplo de uso:**
+  Ordenar pedidos por total en orden ascendente:
+  ```bash
+  curl -X GET "http://localhost/WEB-2APIRESTful/api/pedidos?sortby=total&order=asc"
+  ```
+  Ordenar pedidos por fecha_pedido en orden descendente:
+  ```bash
+  curl -X GET "http://localhost/WEB-2APIRESTful/api/pedidos?sortby=fecha_pedido&order=desc"
+  ```
+  - **Respuesta:**
+    La respuesta será una lista de los pedidos ordenados según el campo y orden especificados. Ejemplo de respuesta:
+    [
     {
-      "id_pedido": 6,
-      "fecha_pedido": "2024-10-20",
-      "estado": "pendiente",
-      "total": 75.00
+    "id_pedido": 3,
+    "fecha_pedido": "2024-10-23",
+    "estado": "pendiente",
+    "total": 120.50
     },
     {
-      "id_pedido": 7,
-      "fecha_pedido": "2024-10-21",
-      "estado": "completado",
-      "total": 150.00
+    "id_pedido": 1,
+    "fecha_pedido": "2024-10-22",
+    "estado": "completado",
+    "total": 100.00
     }
     // ... más pedidos
-  ]
-}
+    ]

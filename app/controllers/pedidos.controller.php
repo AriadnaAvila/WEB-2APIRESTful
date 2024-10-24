@@ -23,38 +23,40 @@ class pedidosController {
 
     
     public function showAll($params = NULL) {
-      $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Número de pedidos por página
-      $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Número de página actual
-      $offset = ($page - 1) * $limit; // Calcular el desplazamiento
-  
-      // Verifica si hay ordenamiento
-      if (isset($_GET['sortby']) && isset($_GET['order'])) { 
-          if (in_array($_GET['sortby'], ['id_pedido', 'fecha_pedido', 'estado', 'total']) && in_array($_GET['order'], ['ASC', 'DESC'])) {
-              $pedidos = $this->model->sortbyorder($_GET['sortby'], $_GET['order']);
-              return $this->apiView->response($pedidos, 200);
-          } else {
-              return $this->apiView->response("Los campos son inválidos", 400);
-          }
-      } else {
-          // Obtiene la lista de pedidos con paginación
-          $pedidos = $this->model->getAll($limit, $offset);
-          
-          // Cuenta el total de pedidos
-          $totalPedidos = $this->model->getTotalCount(); // Método que debes implementar para contar los pedidos
-          $totalPages = ceil($totalPedidos / $limit); // Calcula el total de páginas
-  
-          // Prepara la respuesta con información de paginación
-          $response = [
-              'current_page' => $page,
-              'total_pages' => $totalPages,
-              'total_items' => $totalPedidos,
-              'items' => $pedidos,
-          ];
-  
-          // Devuelve la respuesta
-          return $this->apiView->response($response, 200);
-      } 
-  }
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Número de pedidos por página
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Número de página actual
+        $offset = ($page - 1) * $limit; // Calcular el desplazamiento
+    
+        // Verifica si hay ordenamiento
+        if (isset($_GET['sortby']) && isset($_GET['order'])) { 
+            try {
+                $sortby = $_GET['sortby'];
+                $order = $_GET['order'];
+                $pedidos = $this->model->sortbyorder($sortby, $order);
+                return $this->apiView->response($pedidos, 200);
+            } catch (InvalidArgumentException $e) {
+                return $this->apiView->response($e->getMessage(), 400);
+            }
+        } else {
+            // Obtiene la lista de pedidos con paginación
+            $pedidos = $this->model->getAll($limit, $offset);
+            
+            // Cuenta el total de pedidos
+            $totalPedidos = $this->model->getTotalCount(); 
+            $totalPages = ceil($totalPedidos / $limit); 
+    
+            // Prepara la respuesta con información de paginación
+            $response = [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_items' => $totalPedidos,
+                'items' => $pedidos,
+            ];
+    
+            return $this->apiView->response($response, 200);
+        } 
+    }
+    
   
   
 
@@ -97,13 +99,21 @@ class pedidosController {
       public function updatePedido($params = null){
         $id_pedido = $params[':ID'];
         $pedidoData = $this->getData();
-        if ($pedidoData) {
-            $this->model->update($id_pedido, $pedidoData->fecha_pedido, $pedidoData->estado, $pedidoData->total);
-            $this->apiView->response("El pedido con el id=$id_pedido se actualizó correctamente", 200);
+        
+        // Verifica si el pedido existe
+        if($this->model->getPedidoById($id_pedido)) {
+            // Valida los campos
+            if (!empty($pedidoData->fecha_pedido) && !empty($pedidoData->estado) && !empty($pedidoData->total)) {
+                $this->model->update($id_pedido, $pedidoData->fecha_pedido, $pedidoData->estado, $pedidoData->total);
+                $this->apiView->response("El pedido con el id=$id_pedido se actualizó correctamente", 200);
+            } else {
+                $this->apiView->response("Datos inválidos o incompletos", 400);
+            }
         } else {
             $this->apiView->response("El pedido no existe", 404);
         }
     }
+    
     
 
     public function filterPedidos($params = NULL) {

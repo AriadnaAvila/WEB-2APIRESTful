@@ -51,18 +51,36 @@ class pedidosModel {
     }
 
  
-    function sortbyorder($sortby = null , $order = null ){
-        $query = $this->db->prepare("SELECT * FROM pedidos ORDER BY $sortby $order");
-        $query->execute();
-        $pedidos = $query->fetchAll(PDO::FETCH_OBJ);
-        return $pedidos;
+    function sortbyorder($sortby = 'id_pedido', $order = 'ASC'){
+        // Define los campos válidos para la ordenación
+        $camposValidos = ['id_pedido', 'fecha_pedido', 'estado', 'total'];
+        
+        // Valida que el campo sea permitido
+        if (!in_array($sortby, $camposValidos)) {
+            throw new InvalidArgumentException("Campo no válido para ordenar");
+        }
+    
+        // Valida que el orden sea 'ASC' o 'DESC'
+        $order = strtoupper($order); // Convierte el valor a mayúsculas para mayor flexibilidad
+        if ($order !== 'ASC' && $order !== 'DESC') {
+            throw new InvalidArgumentException("Orden no válido");
+        }
+    
+        // Prepara la consulta usando placeholders seguros
+        $query = "SELECT * FROM pedidos ORDER BY $sortby $order";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+    
+    
 
    
     function update($id_pedido, $fecha_pedido, $estado, $total){
         $query = $this->db->prepare('UPDATE pedidos SET fecha_pedido=?, estado=?, total=? WHERE id_pedido=?');
-        $query->execute([$id_pedido, $fecha_pedido, $estado, $total]);
+        $query->execute([$fecha_pedido, $estado, $total, $id_pedido]); // Aquí el ID va al final
     }
+    
 
     public function filterPedidos($campo, $valor) {
         // Escapa el campo para evitar inyección SQL
