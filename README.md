@@ -128,10 +128,10 @@ Esta API permite gestionar los pedidos en la tienda de ropa. A continuación se 
 ### 8. Ordenar pedidos por campo (Ascendente o Descendente)
 
 - **Método:** `GET`
-- **Endpoint:** `/pedidos?sort_by={campo}&order={asc|desc}`
+- **Endpoint:** `/pedidos?sortby={campo}&order={asc|desc}`
 - **Descripción:** Permite ordenar los pedidos por el campo especificado en orden ascendente o descendente. Los campos válidos son id_pedido, fecha_pedido, estado, total.
 - **Parámetros de consulta:**
-  sort_by: El campo por el cual se realizará la ordenación (por ejemplo, fecha_pedido, estado).
+  sortby: El campo por el cual se realizará la ordenación (por ejemplo, fecha_pedido, estado).
   order: Define el orden de la lista. Utiliza asc para orden ascendente o desc para descendente.
 - **Ejemplo de uso:**
   Ordenar pedidos por total en orden ascendente:
