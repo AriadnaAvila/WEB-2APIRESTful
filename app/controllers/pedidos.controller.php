@@ -4,7 +4,7 @@ require_once './app/views/api.view.php';
 
 class pedidosController {
     private $model;
-    private $viewApi;
+    private $apiView;
     private $data;
 
     // Constructor
